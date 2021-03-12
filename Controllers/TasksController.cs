@@ -35,7 +35,7 @@ namespace TodoList.Api.Controllers
         {
             var task = await _context.Tasks.FindAsync(id);
             if (task == null)
-                return NotFound();
+                return BadRequest(new {message = "Task không tồn tại"});
             var taskVm = new TaskVm
             {
                 Id = task.Id,
@@ -73,8 +73,8 @@ namespace TodoList.Api.Controllers
         public async Task<IActionResult> PutTask(int id, CreateTaskRequest request)
         {
             var task = await _context.Tasks.FindAsync(id);
-            if(task == null)
-                return NotFound();
+            if (task == null)
+                return BadRequest(new {message = "Task không tồn tại"});
             task.Title = request.Title;
             task.DueDate = request.DueDate;
             task.IsComplete = request.IsComplete;
@@ -95,11 +95,31 @@ namespace TodoList.Api.Controllers
         {
             var task = await _context.Tasks.FindAsync(id);
             if (task == null)
-                return NotFound();
+                return BadRequest(new { message = "Task không tồn tại" });
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
+        }
+
+        [HttpPatch("{id}/{isComplete}")]
+        public async Task<IActionResult> UpdateStatus(int id, bool isComplete)
+        {
+            var task = await _context.Tasks.FindAsync(id);
+            if(task == null)
+            {
+                return BadRequest(new {message = "Task không tồn tại"});
+            }
+
+            task.IsComplete = isComplete;
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("GetTask", new { id = task.Id }, new TaskVm
+            {
+                Id = task.Id,
+                Title = task.Title,
+                DueDate = task.DueDate,
+                IsComplete = task.IsComplete
+            });
         }
     }
 }

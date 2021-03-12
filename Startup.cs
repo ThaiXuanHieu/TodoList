@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,7 @@ namespace TodoList.Api
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -23,13 +25,29 @@ namespace TodoList.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var clientUrls = new Dictionary<string, string>
+            {
+                ["React"] = Configuration["ClientUrl:React"]
+            };
             services.AddDbContext<TodoListDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<TodoListDbContext>()
                 .AddDefaultTokenProviders();
-            
+
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
+
+            services.AddCors(options =>
+                        {
+                            options.AddPolicy(MyAllowSpecificOrigins,
+                            builder =>
+                            {
+                                builder.WithOrigins(clientUrls["React"])
+                                    .AllowAnyOrigin()
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod();
+                            });
+                        });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -58,6 +76,9 @@ namespace TodoList.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger TodoList V1");
                 c.RoutePrefix = String.Empty;
             });
+            
+            app.UseCors(MyAllowSpecificOrigins);
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

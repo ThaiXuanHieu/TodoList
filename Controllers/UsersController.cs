@@ -32,7 +32,7 @@ namespace TodoList.Api.Controllers
 
         [HttpPost("authenticate")]
         [AllowAnonymous]
-        public async Task<IActionResult> Authenticate(LoginRequest request)
+        public async Task<IActionResult> Authenticate([FromBody] LoginRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user == null)
@@ -47,7 +47,7 @@ namespace TodoList.Api.Controllers
             var claims = new[]
             {
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.FirstName + user.LastName)
+                new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName)
             };
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -57,7 +57,13 @@ namespace TodoList.Api.Controllers
                 claims,
                 expires: DateTime.Now.AddHours(3),
                 signingCredentials: creds);
-            return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+
+            return Ok(new AuthResult()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                FullName = user.FirstName + " " + user.LastName,
+                Id = user.Id
+            });
         }
 
         [HttpGet]
@@ -78,7 +84,7 @@ namespace TodoList.Api.Controllers
 
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (await _userManager.FindByEmailAsync(request.Email) != null)
             {
@@ -101,7 +107,26 @@ namespace TodoList.Api.Controllers
             var result = await _userManager.CreateAsync(user, request.Password);
             if (result.Succeeded)
             {
-                return Ok();
+                var claims = new[]
+                {
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName)
+                };
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Tokens:Key"]));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                var token = new JwtSecurityToken(_config["Tokens:Issuer"],
+                    _config["Tokens:Issuer"],
+                    claims,
+                    expires: DateTime.Now.AddHours(3),
+                    signingCredentials: creds);
+
+                return Ok(new AuthResult()
+                {
+                    Token = new JwtSecurityTokenHandler().WriteToken(token),
+                    FullName = user.FirstName + " " + user.LastName,
+                    Id = user.Id
+                });
             }
             return BadRequest(new { message = result.Errors });
         }
