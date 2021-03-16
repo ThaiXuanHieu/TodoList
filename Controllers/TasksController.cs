@@ -35,7 +35,7 @@ namespace TodoList.Api.Controllers
         {
             var task = await _context.Tasks.FindAsync(id);
             if (task == null)
-                return BadRequest(new {message = "Task không tồn tại"});
+                return BadRequest(new { message = "Task không tồn tại" });
             var taskVm = new TaskVm
             {
                 Id = task.Id,
@@ -43,6 +43,23 @@ namespace TodoList.Api.Controllers
                 DueDate = task.DueDate,
                 IsComplete = task.IsComplete
             };
+
+            return taskVm;
+        }
+
+        [HttpGet("s/{searchString}")]
+        public async Task<ActionResult<IEnumerable<TaskVm>>> SearchTask(string searchString)
+        {
+            var tasks = await _context.Tasks.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
+            if (tasks == null)
+                return BadRequest(new { message = "Danh sách trống" });
+            var taskVm = tasks.Select(x => new TaskVm
+            {
+                Id = x.Id,
+                Title = x.Title,
+                DueDate = x.DueDate,
+                IsComplete = x.IsComplete
+            }).ToList();
 
             return taskVm;
         }
@@ -74,7 +91,7 @@ namespace TodoList.Api.Controllers
         {
             var task = await _context.Tasks.FindAsync(id);
             if (task == null)
-                return BadRequest(new {message = "Task không tồn tại"});
+                return BadRequest(new { message = "Task không tồn tại" });
             task.Title = request.Title;
             task.DueDate = request.DueDate;
             task.IsComplete = request.IsComplete;
@@ -106,9 +123,9 @@ namespace TodoList.Api.Controllers
         public async Task<IActionResult> UpdateStatus(int id, bool isComplete)
         {
             var task = await _context.Tasks.FindAsync(id);
-            if(task == null)
+            if (task == null)
             {
-                return BadRequest(new {message = "Task không tồn tại"});
+                return BadRequest(new { message = "Task không tồn tại" });
             }
 
             task.IsComplete = isComplete;
