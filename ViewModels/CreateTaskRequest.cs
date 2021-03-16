@@ -8,8 +8,8 @@ namespace TodoList.Api.ViewModels
     {
         [Required]
         public string Title { get; set; }
-
         public DateTime DueDate { get; set; }
+        public Guid CreatedBy { get; set; }
         public bool IsComplete { get; set; }
     }
 }

@@ -72,7 +72,8 @@ namespace TodoList.Api.Controllers
                 Title = request.Title,
                 CreatedDate = DateTime.Now,
                 DueDate = request.DueDate,
-                IsComplete = false
+                IsComplete = false,
+                CreatedBy = request.CreatedBy
             };
 
             _context.Tasks.Add(task);
@@ -95,7 +96,8 @@ namespace TodoList.Api.Controllers
             task.Title = request.Title;
             task.DueDate = request.DueDate;
             task.IsComplete = request.IsComplete;
-
+            task.CreatedBy = request.CreatedBy;
+            
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetTask", new { id = task.Id }, new TaskVm
