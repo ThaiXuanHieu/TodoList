@@ -14,7 +14,7 @@ namespace TodoList.Api.ViewModels
 
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Mật khẩu không khớp")]
-        public string CofirmPassword { get; set; }
+        public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "Tên đăng nhập không được để trống")]
         public string UserName { get; set; }
