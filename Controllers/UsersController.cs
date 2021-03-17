@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,11 +24,13 @@ namespace TodoList.Api.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IConfiguration _config;
-        public UsersController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config)
+        private readonly TodoListDbContext _context;
+        public UsersController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration config, TodoListDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _config = config;
+            _context = context;
         }
 
         [HttpPost("authenticate")]
@@ -129,6 +132,35 @@ namespace TodoList.Api.Controllers
                 });
             }
             return BadRequest(new { message = result.Errors });
+        }
+
+        [HttpGet("{userId}/tasks")]
+        public async Task<ActionResult<IEnumerable<TaskVm>>> GetTasks(Guid userId)
+        {
+            return await _context.Tasks.Where(x => x.CreatedBy == userId).Select(x => new TaskVm
+            {
+                Id = x.Id,
+                Title = x.Title,
+                DueDate = x.DueDate,
+                IsComplete = x.IsComplete
+            }).ToListAsync();
+        }
+
+        [HttpGet("{userId}/tasks/{searchString}")]
+        public async Task<ActionResult<IEnumerable<TaskVm>>> SearchTask(Guid userId, string searchString)
+        {
+            var tasks = await _context.Tasks.Where(x => x.CreatedBy == userId && x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
+            if (tasks == null)
+                return BadRequest(new { message = "Danh sách trống" });
+            var taskVm = tasks.Select(x => new TaskVm
+            {
+                Id = x.Id,
+                Title = x.Title,
+                DueDate = x.DueDate,
+                IsComplete = x.IsComplete
+            }).ToList();
+
+            return taskVm;
         }
 
     }

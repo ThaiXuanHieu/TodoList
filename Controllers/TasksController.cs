@@ -18,18 +18,6 @@ namespace TodoList.Api.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskVm>>> GetTasks()
-        {
-            return await _context.Tasks.Select(x => new TaskVm
-            {
-                Id = x.Id,
-                Title = x.Title,
-                DueDate = x.DueDate,
-                IsComplete = x.IsComplete
-            }).ToListAsync();
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult<TaskVm>> GetTask(int id)
         {
@@ -43,23 +31,6 @@ namespace TodoList.Api.Controllers
                 DueDate = task.DueDate,
                 IsComplete = task.IsComplete
             };
-
-            return taskVm;
-        }
-
-        [HttpGet("s/{searchString}")]
-        public async Task<ActionResult<IEnumerable<TaskVm>>> SearchTask(string searchString)
-        {
-            var tasks = await _context.Tasks.Where(x => x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
-            if (tasks == null)
-                return BadRequest(new { message = "Danh sách trống" });
-            var taskVm = tasks.Select(x => new TaskVm
-            {
-                Id = x.Id,
-                Title = x.Title,
-                DueDate = x.DueDate,
-                IsComplete = x.IsComplete
-            }).ToList();
 
             return taskVm;
         }
