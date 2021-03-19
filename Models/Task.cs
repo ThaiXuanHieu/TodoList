@@ -7,9 +7,9 @@ namespace TodoList.Api.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime? CreatedDate { get; set; }
         public Guid CreatedBy { get; set; }
-        public DateTime DueDate { get; set; }
+        public DateTime? DueDate { get; set; }
         public bool IsComplete { get; set; }
         public List<Step> Steps { get; set; }
     }

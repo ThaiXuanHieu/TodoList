@@ -19,43 +19,30 @@ namespace TodoList.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TaskVm>> GetTask(int id)
+        public async Task<ActionResult<Models.Task>> GetTask(int id)
         {
             var task = await _context.Tasks.FindAsync(id);
+            task.Steps = await _context.Steps.Where(x => x.TaskId == id).ToListAsync();
             if (task == null)
                 return BadRequest(new { message = "Task không tồn tại" });
-            var taskVm = new TaskVm
-            {
-                Id = task.Id,
-                Title = task.Title,
-                DueDate = task.DueDate,
-                IsComplete = task.IsComplete
-            };
 
-            return taskVm;
+            return task;
         }
 
         [HttpPost]
-        public async Task<ActionResult<TaskVm>> PostTask(CreateTaskRequest request)
+        public async Task<ActionResult> PostTask(CreateTaskRequest request)
         {
             var task = new Models.Task
             {
                 Title = request.Title,
                 CreatedDate = DateTime.Now,
-                DueDate = request.DueDate,
                 IsComplete = false,
                 CreatedBy = request.CreatedBy
             };
 
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetTask", new { id = task.Id }, new TaskVm
-            {
-                Id = task.Id,
-                Title = task.Title,
-                DueDate = task.DueDate,
-                IsComplete = task.IsComplete
-            });
+            return CreatedAtAction("GetTask", new { id = task.Id }, task);
         }
 
         [HttpPut("{id}")]
@@ -68,16 +55,10 @@ namespace TodoList.Api.Controllers
             task.DueDate = request.DueDate;
             task.IsComplete = request.IsComplete;
             task.CreatedBy = request.CreatedBy;
-            
+
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetTask", new { id = task.Id }, new TaskVm
-            {
-                Id = task.Id,
-                Title = task.Title,
-                DueDate = task.DueDate,
-                IsComplete = task.IsComplete
-            });
+            return CreatedAtAction("GetTask", new { id = task.Id }, task);
         }
 
         [HttpDelete("{id}")]

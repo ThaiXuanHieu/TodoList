@@ -49,7 +49,9 @@ namespace TodoList.Api
                             });
                         });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger TodoList", Version = "v1" });
@@ -76,7 +78,7 @@ namespace TodoList.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Swagger TodoList V1");
                 c.RoutePrefix = String.Empty;
             });
-            
+
             app.UseCors(MyAllowSpecificOrigins);
 
             app.UseEndpoints(endpoints =>
