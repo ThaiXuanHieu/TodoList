@@ -73,8 +73,22 @@ namespace TodoList.Api.Controllers
             return Ok();
         }
 
-        [HttpPatch("{id}/{isComplete}")]
-        public async Task<IActionResult> UpdateStatus(int id, bool isComplete)
+        // [HttpPatch("{id}/{isComplete}")]
+        // public async Task<IActionResult> UpdateStatus(int id, bool isComplete)
+        // {
+        //     var task = await _context.Tasks.FindAsync(id);
+        //     if (task == null)
+        //     {
+        //         return BadRequest(new { message = "Task không tồn tại" });
+        //     }
+
+        //     task.IsComplete = isComplete;
+        //     await _context.SaveChangesAsync();
+        //     return CreatedAtAction("GetTask", new { id = task.Id }, task);
+        // }
+
+        [HttpPatch("{id}/{title}")]
+        public async Task<IActionResult> UpdateTitle(int id, string title)
         {
             var task = await _context.Tasks.FindAsync(id);
             if (task == null)
@@ -82,15 +96,9 @@ namespace TodoList.Api.Controllers
                 return BadRequest(new { message = "Task không tồn tại" });
             }
 
-            task.IsComplete = isComplete;
+            task.Title = title;
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetTask", new { id = task.Id }, new TaskVm
-            {
-                Id = task.Id,
-                Title = task.Title,
-                DueDate = task.DueDate,
-                IsComplete = task.IsComplete
-            });
+            return CreatedAtAction("GetTask", new { id = task.Id }, task);
         }
     }
 }
