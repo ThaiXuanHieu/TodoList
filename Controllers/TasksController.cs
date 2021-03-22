@@ -49,6 +49,7 @@ namespace TodoList.Api.Controllers
         public async Task<IActionResult> PutTask(int id, CreateTaskRequest request)
         {
             var task = await _context.Tasks.FindAsync(id);
+            task.Steps = await _context.Steps.Where(x => x.TaskId == id).ToListAsync();
             if (task == null)
                 return BadRequest(new { message = "Task không tồn tại" });
             task.Title = request.Title;
@@ -76,18 +77,44 @@ namespace TodoList.Api.Controllers
         [HttpGet("{userId}/tasks")]
         public async Task<ActionResult<IEnumerable<Models.Task>>> GetTasks(Guid userId)
         {
-            return await _context.Tasks.Where(x => x.CreatedBy == userId).OrderByDescending(x => x.Id).ToListAsync();
+            return await _context.Tasks
+            .Where(x => x.CreatedBy == userId)
+            .OrderByDescending(x => x.Id)
+            .Select(
+                x => new Models.Task {
+                    Id = x.Id,
+                    Title = x.Title,
+                    DueDate = x.DueDate,
+                    IsComplete = x.IsComplete,
+                    CreatedBy = x.CreatedBy,
+                    Steps = _context.Steps.Where(s => s.TaskId == x.Id).ToList()
+                }
+
+            ).ToListAsync();
         }
 
         [HttpGet("{userId}/tasks/{searchString}")]
         public async Task<ActionResult<IEnumerable<Models.Task>>> SearchTask(Guid userId, string searchString)
         {
-            var tasks = await _context.Tasks.Where(x => x.CreatedBy == userId && x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
+            var tasks = await _context.Tasks
+            .Where(x => x.CreatedBy == userId && x.Title.ToLower().Contains(searchString.ToLower()))
+            .OrderByDescending(x => x.Id)
+            .Select(
+                x => new Models.Task {
+                    Id = x.Id,
+                    Title = x.Title,
+                    DueDate = x.DueDate,
+                    IsComplete = x.IsComplete,
+                    CreatedBy = x.CreatedBy,
+                    Steps = _context.Steps.Where(s => s.TaskId == x.Id).ToList()
+                }
+
+            ).ToListAsync();
             if (tasks == null)
                 return BadRequest(new { message = "Danh sách trống" });
             
             return tasks;
         }
-        
+
     }
 }
