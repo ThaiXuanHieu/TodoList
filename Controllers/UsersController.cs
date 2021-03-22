@@ -134,21 +134,5 @@ namespace TodoList.Api.Controllers
             return BadRequest(new { message = result.Errors });
         }
 
-        [HttpGet("{userId}/tasks")]
-        public async Task<ActionResult<IEnumerable<Models.Task>>> GetTasks(Guid userId)
-        {
-            return await _context.Tasks.Where(x => x.CreatedBy == userId).OrderByDescending(x => x.Id).ToListAsync();
-        }
-
-        [HttpGet("{userId}/tasks/{searchString}")]
-        public async Task<ActionResult<IEnumerable<Models.Task>>> SearchTask(Guid userId, string searchString)
-        {
-            var tasks = await _context.Tasks.Where(x => x.CreatedBy == userId && x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
-            if (tasks == null)
-                return BadRequest(new { message = "Danh sách trống" });
-            
-            return tasks;
-        }
-
     }
 }

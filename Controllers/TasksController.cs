@@ -73,32 +73,21 @@ namespace TodoList.Api.Controllers
             return Ok();
         }
 
-        // [HttpPatch("{id}/{isComplete}")]
-        // public async Task<IActionResult> UpdateStatus(int id, bool isComplete)
-        // {
-        //     var task = await _context.Tasks.FindAsync(id);
-        //     if (task == null)
-        //     {
-        //         return BadRequest(new { message = "Task không tồn tại" });
-        //     }
-
-        //     task.IsComplete = isComplete;
-        //     await _context.SaveChangesAsync();
-        //     return CreatedAtAction("GetTask", new { id = task.Id }, task);
-        // }
-
-        [HttpPatch("{id}/{title}")]
-        public async Task<IActionResult> UpdateTitle(int id, string title)
+        [HttpGet("{userId}/tasks")]
+        public async Task<ActionResult<IEnumerable<Models.Task>>> GetTasks(Guid userId)
         {
-            var task = await _context.Tasks.FindAsync(id);
-            if (task == null)
-            {
-                return BadRequest(new { message = "Task không tồn tại" });
-            }
-
-            task.Title = title;
-            await _context.SaveChangesAsync();
-            return CreatedAtAction("GetTask", new { id = task.Id }, task);
+            return await _context.Tasks.Where(x => x.CreatedBy == userId).OrderByDescending(x => x.Id).ToListAsync();
         }
+
+        [HttpGet("{userId}/tasks/{searchString}")]
+        public async Task<ActionResult<IEnumerable<Models.Task>>> SearchTask(Guid userId, string searchString)
+        {
+            var tasks = await _context.Tasks.Where(x => x.CreatedBy == userId && x.Title.ToLower().Contains(searchString.ToLower())).ToListAsync();
+            if (tasks == null)
+                return BadRequest(new { message = "Danh sách trống" });
+            
+            return tasks;
+        }
+        
     }
 }
