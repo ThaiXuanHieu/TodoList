@@ -20,33 +20,23 @@ namespace TodoList.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StepVm>>> GetSteps()
+        public async Task<ActionResult<IEnumerable<Step>>> GetSteps()
         {
-            return await _context.Steps.Select(x => new StepVm
-            {
-                Id = x.Id,
-                Title = x.Title
-            }).ToListAsync();
+            return await _context.Steps.OrderByDescending(x => x.Id).ToListAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<StepVm>> GetStep(int id)
+        public async Task<ActionResult<Step>> GetStep(int id)
         {
             var step = await _context.Steps.FindAsync(id);
             if (step == null)
-                return NotFound();
+                return BadRequest(new { message = "Step không tồn tại"});
 
-            var stepVm = new StepVm
-            {
-                Id = step.Id,
-                Title = step.Title
-            };
-
-            return stepVm;
+            return step;
         }
 
         [HttpPost]
-        public async Task<ActionResult<StepVm>> PostStep(CreateStepRequest request)
+        public async Task<ActionResult<Step>> PostStep(CreateStepRequest request)
         {
             var step = new Step
             {
@@ -58,11 +48,7 @@ namespace TodoList.Api.Controllers
             _context.Steps.Add(step);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetStep", new { id = step.Id }, new StepVm
-            {
-                Id = step.Id,
-                Title = step.Title
-            });
+            return CreatedAtAction("GetStep", new { id = step.Id }, step);
         }
 
         [HttpPut("{id}")]
@@ -70,18 +56,14 @@ namespace TodoList.Api.Controllers
         {
             var step = await _context.Steps.FindAsync(id);
             if (step == null)
-                return NotFound();
+                return BadRequest(new { message = "Step không tồn tại"});
             step.Title = request.Title;
             step.TaskId = id;
             step.IsComplete = request.IsComplete;
             
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetStep", new { id = step.Id }, new StepVm
-            {
-                Id = step.Id,
-                Title = step.Title
-            });
+            return CreatedAtAction("GetStep", new { id = step.Id }, step);
         }
 
         [HttpDelete("{id}")]
@@ -89,10 +71,10 @@ namespace TodoList.Api.Controllers
         {
             var step = await _context.Steps.FindAsync(id);
             if (step == null)
-                return NotFound();
+                return BadRequest(new { message = "Step không tồn tại"});
             _context.Steps.Remove(step);
             await _context.SaveChangesAsync();
-            return NoContent();
+            return Ok();
         }
     }
 }
