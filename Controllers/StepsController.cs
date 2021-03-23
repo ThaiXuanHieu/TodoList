@@ -25,6 +25,12 @@ namespace TodoList.Api.Controllers
             return await _context.Steps.OrderByDescending(x => x.Id).ToListAsync();
         }
 
+        [HttpGet("{taskId}/steps")]
+        public async Task<ActionResult<IEnumerable<Step>>> GetStepsByTaskId(int taskId)
+        {
+            return await _context.Steps.Where(x => x.TaskId == taskId).OrderByDescending(x => x.Id).ToListAsync();
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Step>> GetStep(int id)
         {
