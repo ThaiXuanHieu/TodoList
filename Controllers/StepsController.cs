@@ -64,7 +64,7 @@ namespace TodoList.Api.Controllers
             if (step == null)
                 return BadRequest(new { message = "Step không tồn tại"});
             step.Title = request.Title;
-            step.TaskId = id;
+            step.TaskId = request.TaskId;
             step.IsComplete = request.IsComplete;
             
             await _context.SaveChangesAsync();
