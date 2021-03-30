@@ -108,6 +108,7 @@ namespace TodoList.Api.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, request.Password);
+            var u = await _userManager.FindByEmailAsync(user.Email);
             if (result.Succeeded)
             {
                 var claims = new[]
@@ -127,8 +128,8 @@ namespace TodoList.Api.Controllers
                 return Ok(new AuthResult()
                 {
                     Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    FullName = user.FirstName + " " + user.LastName,
-                    Id = user.Id
+                    FullName = u.FirstName + " " + u.LastName,
+                    Id = u.Id
                 });
             }
             return BadRequest(new { message = result.Errors });
