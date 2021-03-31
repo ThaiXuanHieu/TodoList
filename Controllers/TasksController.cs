@@ -38,6 +38,7 @@ namespace TodoList.Api.Controllers
                 Title = request.Title,
                 CreatedDate = DateTime.Now,
                 IsComplete = false,
+                IsImportant = false,
                 CreatedBy = request.CreatedBy
             };
 
@@ -57,6 +58,7 @@ namespace TodoList.Api.Controllers
             task.Title = request.Title;
             task.DueDate = request.DueDate;
             task.IsComplete = request.IsComplete;
+            task.IsImportant = request.IsImportant;
             task.CreatedBy = request.CreatedBy;
 
             await _context.SaveChangesAsync();
@@ -88,6 +90,7 @@ namespace TodoList.Api.Controllers
                     Title = x.Title,
                     DueDate = x.DueDate,
                     IsComplete = x.IsComplete,
+                    IsImportant = x.IsImportant,
                     CreatedBy = x.CreatedBy,
                     Steps = _context.Steps.Where(s => s.TaskId == x.Id).ToList()
                 }
@@ -107,6 +110,7 @@ namespace TodoList.Api.Controllers
                     Title = x.Title,
                     DueDate = x.DueDate,
                     IsComplete = x.IsComplete,
+                    IsImportant = x.IsImportant,
                     CreatedBy = x.CreatedBy,
                     Steps = _context.Steps.Where(s => s.TaskId == x.Id).ToList()
                 }
