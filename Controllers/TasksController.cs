@@ -44,7 +44,6 @@ namespace TodoList.Api.Controllers
             _context.Tasks.Add(task);
             await _context.SaveChangesAsync();
 
-            task.Steps = new List<Step>();
             return CreatedAtAction("GetTask", new { id = task.Id }, task);
         }
 
