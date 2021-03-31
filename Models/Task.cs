@@ -11,6 +11,7 @@ namespace TodoList.Api.Models
         public Guid CreatedBy { get; set; }
         public DateTime? DueDate { get; set; }
         public bool IsComplete { get; set; }
+        public bool IsImportant { get; set; }
         public List<Step> Steps { get; set; } = new List<Step>();
         public List<File> Files { get; set; } = new List<File>();
     }
