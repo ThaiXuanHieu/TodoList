@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace TodoList.Api.Migrations
 {
     [DbContext(typeof(TodoListDbContext))]
-    partial class TodoListDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210331013236_AddTableFile")]
+    partial class AddTableFile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -146,7 +148,7 @@ namespace TodoList.Api.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "265f0a1f-b64d-4a11-88e5-a8e95db836f3",
+                            ConcurrencyStamp = "48aa13fb-e0a4-420a-9e55-0348f1665754",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "ADMIN"
@@ -216,7 +218,7 @@ namespace TodoList.Api.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e03f13f0-8f57-4cf4-9880-c22c09558e62",
+                            ConcurrencyStamp = "8163b013-97cc-436b-8692-11ebdcda035b",
                             Email = "test@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Hiếu",
@@ -224,7 +226,7 @@ namespace TodoList.Api.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "TEST@GMAIL.COM",
                             NormalizedUserName = "TEST",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAEtRdsjp1llQuQeznNVkR1iiXyOwYsFYWyzUrWODAiYvFzzJJNw9qDisupjjsUltw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENlui2I9c7lEvUvCU30Je3+hkE6JDdub6mH3mZFX6Fhq1GSl0FJ4I3RgOPCWMPrkJA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
