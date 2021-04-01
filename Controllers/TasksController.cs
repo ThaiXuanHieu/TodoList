@@ -122,5 +122,48 @@ namespace TodoList.Api.Controllers
             return tasks;
         }
 
+        [HttpGet("{userId}/tasks/sortby/{predicate}")]
+        public async Task<ActionResult<IEnumerable<Models.Task>>> SortByPredicate(Guid userId, string predicate)
+        {
+            switch (predicate)
+            {
+                case "importance": 
+                    return await _context.Tasks
+                    .Where(x => x.CreatedBy == userId)
+                    .OrderByDescending(x => x.IsImportant)
+                    .Select(
+                        x => new Models.Task {
+                            Id = x.Id,
+                            Title = x.Title,
+                            DueDate = x.DueDate,
+                            IsComplete = x.IsComplete,
+                            IsImportant = x.IsImportant,
+                            CreatedBy = x.CreatedBy,
+                            Steps = _context.Steps.Where(s => s.TaskId == x.Id).ToList()
+                        }
+
+                    ).ToListAsync();
+
+                case "duaDate": 
+                    return await _context.Tasks
+                    .Where(x => x.CreatedBy == userId)
+                    .OrderByDescending(x => x.DueDate)
+                    .Select(
+                        x => new Models.Task {
+                            Id = x.Id,
+                            Title = x.Title,
+                            DueDate = x.DueDate,
+                            IsComplete = x.IsComplete,
+                            IsImportant = x.IsImportant,
+                            CreatedBy = x.CreatedBy,
+                            Steps = _context.Steps.Where(s => s.TaskId == x.Id).ToList()
+                        }
+
+                    ).ToListAsync();
+
+                default:
+                    return null;
+            }
+        }
     }
 }
