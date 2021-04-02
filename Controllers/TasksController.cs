@@ -63,6 +63,7 @@ namespace TodoList.Api.Controllers
         {
             var task = await _context.Tasks.FindAsync(id);
             task.Steps = await _context.Steps.Where(x => x.TaskId == id).ToListAsync();
+            task.Files = await _context.Files.Where(x => x.TaskId == id).ToListAsync();
             if (task == null)
                 return BadRequest(new { message = "Task không tồn tại" });
             task.Title = request.Title;
