@@ -205,9 +205,9 @@ namespace TodoList.Api.Controllers
         private async Task<string> SaveFile(IFormFile file)
         {
             var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            var fileName = $"{file.FileName.Split('.')[0]}-{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
             await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
-            return _config["BaseAddress"] + _storageService.GetFileUrl(fileName);
+            return _storageService.GetFileUrl(fileName);
         }
     }
 }

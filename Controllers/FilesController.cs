@@ -48,6 +48,7 @@ namespace TodoList.Api.Controllers
             var file = await _context.Files.FindAsync(id);
             if (file == null)
                 return BadRequest(new { message = "File không tồn tại" });
+            await _storageService.DeleteFileAsync(file.Path.Split('/')[2]);
             _context.Files.Remove(file);
             await _context.SaveChangesAsync();
             return Ok();
