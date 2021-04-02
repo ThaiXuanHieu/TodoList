@@ -6,6 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoList.Api.ViewModels;
 using TodoList.Api.Models;
+using Microsoft.AspNetCore.Http;
+using System.Net.Http.Headers;
+using System.IO;
+using TodoList.Api.Services;
+using Microsoft.Extensions.Configuration;
 
 namespace TodoList.Api.Controllers
 {
@@ -14,9 +19,13 @@ namespace TodoList.Api.Controllers
     public class TasksController : ControllerBase
     {
         private readonly TodoListDbContext _context;
-        public TasksController(TodoListDbContext context)
+        private readonly IStorageService _storageService;
+        private readonly IConfiguration _config;
+        public TasksController(TodoListDbContext context, IStorageService storageService, IConfiguration config)
         {
             _context = context;
+            _storageService = storageService;
+            _config = config;
         }
 
         [HttpGet("{id}")]
@@ -24,6 +33,7 @@ namespace TodoList.Api.Controllers
         {
             var task = await _context.Tasks.FindAsync(id);
             task.Steps = await _context.Steps.Where(x => x.TaskId == id).ToListAsync();
+            task.Files = await _context.Files.Where(x => x.TaskId == id).ToListAsync();
             if (task == null)
                 return BadRequest(new { message = "Task không tồn tại" });
 
@@ -85,14 +95,16 @@ namespace TodoList.Api.Controllers
             .Where(x => x.CreatedBy == userId)
             .OrderByDescending(x => x.Id)
             .Select(
-                x => new Models.Task {
+                x => new Models.Task
+                {
                     Id = x.Id,
                     Title = x.Title,
                     DueDate = x.DueDate,
                     IsComplete = x.IsComplete,
                     IsImportant = x.IsImportant,
                     CreatedBy = x.CreatedBy,
-                    Steps = _context.Steps.Where(s => s.TaskId == x.Id).ToList()
+                    Steps = _context.Steps.Where(s => s.TaskId == x.Id).ToList(),
+                    Files = _context.Files.Where(s => s.TaskId == x.Id).ToList()
                 }
 
             ).ToListAsync();
@@ -105,7 +117,8 @@ namespace TodoList.Api.Controllers
             .Where(x => x.CreatedBy == userId && x.Title.ToLower().Contains(searchString.ToLower()))
             .OrderByDescending(x => x.Id)
             .Select(
-                x => new Models.Task {
+                x => new Models.Task
+                {
                     Id = x.Id,
                     Title = x.Title,
                     DueDate = x.DueDate,
@@ -118,7 +131,7 @@ namespace TodoList.Api.Controllers
             ).ToListAsync();
             if (tasks == null)
                 return BadRequest(new { message = "Danh sách trống" });
-            
+
             return tasks;
         }
 
@@ -127,12 +140,13 @@ namespace TodoList.Api.Controllers
         {
             switch (predicate)
             {
-                case "importance": 
+                case "importance":
                     return await _context.Tasks
                     .Where(x => x.CreatedBy == userId)
                     .OrderByDescending(x => x.IsImportant)
                     .Select(
-                        x => new Models.Task {
+                        x => new Models.Task
+                        {
                             Id = x.Id,
                             Title = x.Title,
                             DueDate = x.DueDate,
@@ -144,12 +158,13 @@ namespace TodoList.Api.Controllers
 
                     ).ToListAsync();
 
-                case "duaDate": 
+                case "duaDate":
                     return await _context.Tasks
                     .Where(x => x.CreatedBy == userId)
                     .OrderByDescending(x => x.DueDate)
                     .Select(
-                        x => new Models.Task {
+                        x => new Models.Task
+                        {
                             Id = x.Id,
                             Title = x.Title,
                             DueDate = x.DueDate,
@@ -164,6 +179,34 @@ namespace TodoList.Api.Controllers
                 default:
                     return null;
             }
+        }
+
+        [HttpPost("{taskId}/files")]
+        public async Task<IActionResult> AddFile(int taskId, IFormFile file)
+        {
+            var fileModel = new Models.File()
+            {
+                Name = file.FileName,
+                Size = file.Length,
+                Type = file.FileName.Split('.')[1],
+                Path = await this.SaveFile(file),
+                TaskId = taskId,
+            };
+            _context.Files.Add(fileModel);
+            await _context.SaveChangesAsync();
+
+            var task = await _context.Tasks.FindAsync(taskId);
+            task.Steps = await _context.Steps.Where(x => x.TaskId == taskId).ToListAsync();
+            task.Files = await _context.Files.Where(x => x.TaskId == taskId).ToListAsync();
+            return CreatedAtAction("GetTask", new { id = taskId }, task);
+        }
+
+        private async Task<string> SaveFile(IFormFile file)
+        {
+            var originalFileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(originalFileName)}";
+            await _storageService.SaveFileAsync(file.OpenReadStream(), fileName);
+            return _config["BaseAddress"] + _storageService.GetFileUrl(fileName);
         }
     }
 }

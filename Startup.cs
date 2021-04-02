@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using TodoList.Api.Models;
+using TodoList.Api.Services;
 
 namespace TodoList.Api
 {
@@ -33,10 +34,11 @@ namespace TodoList.Api
             services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<TodoListDbContext>()
                 .AddDefaultTokenProviders();
-
+            
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
-
+            services.AddTransient<IStorageService, FileStorageService>();
+            
             services.AddCors(options =>
                         {
                             options.AddPolicy(MyAllowSpecificOrigins,
@@ -67,7 +69,7 @@ namespace TodoList.Api
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseRouting();
 
             app.UseAuthorization();

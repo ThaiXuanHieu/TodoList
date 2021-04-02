@@ -15,6 +15,7 @@ public class TodoListDbContext : IdentityDbContext<AppUser, AppRole, Guid>
 
     public DbSet<Task> Tasks { get; set; }
     public DbSet<Step> Steps { get; set; }
+    public DbSet<File> Files { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -22,6 +23,7 @@ public class TodoListDbContext : IdentityDbContext<AppUser, AppRole, Guid>
         builder.ApplyConfiguration(new AppRoleConfiguration());
         builder.ApplyConfiguration(new TaskConfiguration());
         builder.ApplyConfiguration(new StepConfiguration());
+        builder.ApplyConfiguration(new FileConfiguration());
 
         builder.Entity<IdentityUserClaim<Guid>>().ToTable("AppUserClaims");
         builder.Entity<IdentityUserRole<Guid>>().ToTable("AppUserRoles").HasKey(x => new { x.UserId, x.RoleId });

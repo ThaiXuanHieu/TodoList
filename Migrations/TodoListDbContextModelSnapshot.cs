@@ -146,7 +146,7 @@ namespace TodoList.Api.Migrations
                         new
                         {
                             Id = new Guid("8d04dce2-969a-435d-bba4-df3f325983dc"),
-                            ConcurrencyStamp = "b1aad00f-2cca-42ed-a4dc-0eba4a0c9d17",
+                            ConcurrencyStamp = "e7bb90e0-0e9c-43cd-b273-86e722be4a58",
                             Description = "Administrator role",
                             Name = "admin",
                             NormalizedName = "ADMIN"
@@ -216,7 +216,7 @@ namespace TodoList.Api.Migrations
                         {
                             Id = new Guid("69bd714f-9576-45ba-b5b7-f00649be00de"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c57b1711-99de-48df-b31d-57337c1a2c09",
+                            ConcurrencyStamp = "0c40609f-e775-409d-9b00-863fc27b096e",
                             Email = "test@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Hiếu",
@@ -224,7 +224,7 @@ namespace TodoList.Api.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "TEST@GMAIL.COM",
                             NormalizedUserName = "TEST",
-                            PasswordHash = "AQAAAAEAACcQAAAAELkdInxUdj1vlavvMO8h7g8zMWX9V67vFaXaqgwlkjEJVJ39+/TumGpxtahsrNHx3g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAELAmk6YF8wKK1+ETYQRmanGuHXKIHp4WgNrNswFFedb1oJ6xSQ7ZinhBhjKT95mk9A==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,
@@ -258,7 +258,7 @@ namespace TodoList.Api.Migrations
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("File");
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("TodoList.Api.Models.Step", b =>
