@@ -81,9 +81,15 @@ namespace TodoList.Api.Controllers
         public async Task<IActionResult> DeleteTask(int id)
         {
             var task = await _context.Tasks.FindAsync(id);
+            var files = await _context.Files.Where(x => x.TaskId == id).ToListAsync();
             if (task == null)
                 return BadRequest(new { message = "Task không tồn tại" });
             _context.Tasks.Remove(task);
+
+            foreach (var file in files)
+            {
+                await _storageService.DeleteFileAsync(file.Path.Split('/')[2]);
+            }
             await _context.SaveChangesAsync();
 
             return Ok();

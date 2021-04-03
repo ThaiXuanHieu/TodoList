@@ -37,7 +37,7 @@ namespace TodoList.Api.Controllers
         }
 
         [HttpGet("{taskId}/files")]
-        public async Task<ActionResult<IEnumerable<File>>> GetStepsByTaskId(int taskId)
+        public async Task<ActionResult<IEnumerable<File>>> GetFilesByTaskId(int taskId)
         {
             return await _context.Files.Where(x => x.TaskId == taskId).OrderByDescending(x => x.Id).ToListAsync();
         }
