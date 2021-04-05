@@ -48,7 +48,7 @@ namespace TodoList.Api.Controllers
                 Title = request.Title,
                 CreatedDate = DateTime.Now,
                 IsComplete = false,
-                IsImportant = false,
+                IsImportant = request.IsImportant,
                 CreatedBy = request.CreatedBy
             };
 
