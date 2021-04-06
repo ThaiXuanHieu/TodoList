@@ -165,7 +165,7 @@ namespace TodoList.Api.Controllers
 
                     ).ToListAsync();
 
-                case "duaDate":
+                case "dueDate":
                     return await _context.Tasks
                     .Where(x => x.CreatedBy == userId)
                     .OrderByDescending(x => x.DueDate)
