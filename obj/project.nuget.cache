@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "9f/+z5Ib6xvvbwGhcV6w75z1aIjRAvplaM/kb9GNErqD3UPyFd7FAYxuNp+jzrYN7foyQ6fhffxGYzKsjwki6g==",
+  "dgSpecHash": "kiueUQeAs3aAwo5en44foohY6C4frSeS6TE00fg+mjOn7L8bx2Z//9ZbMzdxRR4q2GmU1LNJyuibFC/MQehSNw==",
   "success": true,
   "projectFilePath": "H:\\RedSand-Training\\TodoList.Api\\TodoList.Api.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Hieu XT\\.nuget\\packages\\cronos\\0.7.0\\cronos.0.7.0.nupkg.sha512",
     "C:\\Users\\Hieu XT\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Hieu XT\\.nuget\\packages\\microsoft.aspnetcore.cors\\2.2.0\\microsoft.aspnetcore.cors.2.2.0.nupkg.sha512",
     "C:\\Users\\Hieu XT\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\5.0.0\\microsoft.aspnetcore.cryptography.internal.5.0.0.nupkg.sha512",

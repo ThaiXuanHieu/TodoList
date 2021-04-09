@@ -34,11 +34,11 @@ namespace TodoList.Api
             services.AddIdentity<AppUser, AppRole>()
                 .AddEntityFrameworkStores<TodoListDbContext>()
                 .AddDefaultTokenProviders();
-            
+
             services.AddTransient<UserManager<AppUser>, UserManager<AppUser>>();
             services.AddTransient<SignInManager<AppUser>, SignInManager<AppUser>>();
             services.AddTransient<IStorageService, FileStorageService>();
-            
+
             services.AddCors(options =>
                         {
                             options.AddPolicy(MyAllowSpecificOrigins,
@@ -54,6 +54,13 @@ namespace TodoList.Api
             services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+
+            services.AddScoped<IMyScopedService, MyScopedService>();
+            services.AddCronJob<TaskCronJob>(c =>
+            {
+                c.TimeZoneInfo = TimeZoneInfo.Local;
+                c.CronExpression = @"*/1 * * * *";
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger TodoList", Version = "v1" });
