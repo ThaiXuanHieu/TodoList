@@ -169,6 +169,7 @@ namespace TodoList.Api.Controllers
                     return await _context.Tasks
                     .Where(x => x.CreatedBy == userId)
                     .OrderBy(x => DateTime.Today)
+                    .ThenBy(x => x.DueDate)
                     .Select(
                         x => new Models.Task
                         {
