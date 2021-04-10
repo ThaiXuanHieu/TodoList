@@ -168,7 +168,7 @@ namespace TodoList.Api.Controllers
                 case "dueDate":
                     return await _context.Tasks
                     .Where(x => x.CreatedBy == userId)
-                    .OrderByDescending(x => x.DueDate)
+                    .OrderBy(x => DateTime.Today)
                     .Select(
                         x => new Models.Task
                         {
