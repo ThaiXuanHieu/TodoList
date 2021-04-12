@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kiueUQeAs3aAwo5en44foohY6C4frSeS6TE00fg+mjOn7L8bx2Z//9ZbMzdxRR4q2GmU1LNJyuibFC/MQehSNw==",
+  "dgSpecHash": "PG0qL0mULipg9NCfw8WSDhSbmb7qLQweR0B0D0ngIiqJIyUKTmB3wvUwi8zp0j9efkJ5rp8f74mR+HYQoKB3VA==",
   "success": true,
   "projectFilePath": "H:\\RedSand-Training\\TodoList.Api\\TodoList.Api.csproj",
   "expectedPackageFiles": [
@@ -63,6 +63,7 @@
     "C:\\Users\\Hieu XT\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration.templating\\2.0.0\\microsoft.visualstudio.web.codegeneration.templating.2.0.0.nupkg.sha512",
     "C:\\Users\\Hieu XT\\.nuget\\packages\\microsoft.visualstudio.web.codegeneration.utils\\2.0.0\\microsoft.visualstudio.web.codegeneration.utils.2.0.0.nupkg.sha512",
     "C:\\Users\\Hieu XT\\.nuget\\packages\\microsoft.visualstudio.web.codegenerators.mvc\\2.0.0\\microsoft.visualstudio.web.codegenerators.mvc.2.0.0.nupkg.sha512",
+    "C:\\Users\\Hieu XT\\.nuget\\packages\\ncrontab\\3.3.1\\ncrontab.3.3.1.nupkg.sha512",
     "C:\\Users\\Hieu XT\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
     "C:\\Users\\Hieu XT\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
     "C:\\Users\\Hieu XT\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512",

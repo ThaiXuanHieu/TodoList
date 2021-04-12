@@ -55,12 +55,15 @@ namespace TodoList.Api
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
 
-            services.AddScoped<IMyScopedService, MyScopedService>();
-            services.AddCronJob<TaskCronJob>(c =>
-            {
-                c.TimeZoneInfo = TimeZoneInfo.Local;
-                c.CronExpression = @"*/1 * * * *";
-            });
+            // services.AddScoped<IMyScopedService, MyScopedService>();
+            // services.AddCronJob<TaskCronJob>(c =>
+            // {
+            //     c.TimeZoneInfo = TimeZoneInfo.Local;
+            //     c.CronExpression = @"*/1 * * * *";
+            // });
+
+            services.AddHostedService<TaskHostedService>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Swagger TodoList", Version = "v1" });
