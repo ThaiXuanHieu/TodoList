@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TodoList.Api.Hubs;
 using TodoList.Api.Models;
 using TodoList.Api.Services;
 
@@ -54,6 +55,7 @@ namespace TodoList.Api
             services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
+            services.AddSignalR();
 
             services.AddCronJob<TaskCronJob>(c =>
             {
@@ -93,6 +95,7 @@ namespace TodoList.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<NotifyHub>("/hubs/notifications");
             });
         }
     }
